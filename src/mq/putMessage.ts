@@ -40,24 +40,14 @@ function cleanup(hConn: mq.MQQueueManager, hObj: mq.MQObject) {
 
 const putMsgToMq = () => {
     console.log("Sample AMQSPUT.TS start")
-    /*const myArgs = process.argv.slice(2) // Remove redundant parms
-    if (myArgs[0]) qName = myArgs[0]
-    if (myArgs[1]) qMgr = myArgs[1]
-    const cno   = new mq.MQCNO()
-    cno.Options = MQC.MQCNO_NONE // use MQCNO_CLIENT_BINDING to connect as client
-    if (false) {
-      const csp = new mq.MQCSP()
-      csp.UserId = "app"
-      csp.Password = "passw0rd"
-      cno.SecurityParms = csp
-    }*/
+
     const cno: any          = new mq.MQCNO()
         cno.Options         |= MQC.MQCNO_CLIENT_BINDING // use MQCNO_CLIENT_BINDING to connect as client
         const cd: any       = new mq.MQCD()
         cd.ConnectionName   = `${process.env.HOST}:${process.env.PORT}`
-        cd.ChannelName      = process.env.CHANNEL
+        cd.ChannelName      = `${process.env.CHANNEL}`
         cno.ClientConn      = cd
-        const csp           = new mq.MQCSP()
+    const csp               = new mq.MQCSP()
         csp.UserId          = "app"
         csp.Password        = "passw0rd"
         cno.SecurityParms   = csp
