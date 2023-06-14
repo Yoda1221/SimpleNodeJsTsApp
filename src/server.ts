@@ -3,7 +3,7 @@ import chalk            from 'chalk'
 import DateFormatting   from './services/DateFormatting'
 import dotenv           from 'dotenv'
 
-import putMessage from './mq/httpRequest'
+//import putMessage from './mq/httpRequest'
 import putMsgToMq from "./mq/putMessage"
 
 dotenv.config()
@@ -13,11 +13,7 @@ const app: Express = express()
 app.use(express.json)
 app.use(express.urlencoded({ extended: true }))
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("SIMPPLE NODEJS APP WITH TS")
-})
-
-
+app.get("/", (req: Request, res: Response) => { res.send("SIMPPLE NODEJS APP WITH TS") })
 
 app.listen(PORT, () => {
     console.log(chalk.whiteBright(`\n

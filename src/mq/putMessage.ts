@@ -1,11 +1,7 @@
-
-// Import the MQ package
-import * as mq from "ibmmq"
-import dotenv from 'dotenv'
+import * as mq  from "ibmmq"
+import dotenv   from 'dotenv'
 dotenv.config()
-//import { MQC } from "ibmmq" // Want to refer to this export directly for simplicity
 
-// The queue manager and queue to be used. These can be overridden on command line.
 const MQC   = mq.MQC
 let qMgr    = `${process.env.QMGR}`
 let qName   = `${process.env.QUEUE}`
@@ -20,18 +16,17 @@ function putMessage(hObj: mq.MQObject) {
     const msg     = "Hello from Node at " + new Date().toString()
 
     pmo.Options = [ MQC.MQPMO_NO_SYNCPOINT, MQC.MQPMO_NEW_MSG_ID, MQC.MQPMO_NEW_CORREL_ID]
-    mq.Put(hObj, mqmd, pmo, msg, function (err) {
+    mq.Put(hObj, mqmd, pmo, msg, (err) => {
         if (err) console.log('PUT ERROR ', err)
         else console.log("MsgId: " + toHexString(mqmd.MsgId), "MQPUT successful")
     })
 }
 
-// When we're done, close queues and connections
 function cleanup(hConn: mq.MQQueueManager, hObj: mq.MQObject) {
-    mq.Close(hObj, 0, function (closeErr) {
-        if (closeErr) {console.log(closeErr)} 
-        else { console.log("MQCLOSE successful") }
-        mq.Disc(hConn, function (discErr) {
+    mq.Close(hObj, 0, (closeErr) => {
+        if (closeErr) console.log(closeErr)
+        else console.log("MQCLOSE successful")
+        mq.Disc(hConn, (discErr) => {
             if (discErr) console.log(discErr)
             else console.log("MQDISC successful")
         })
@@ -40,7 +35,6 @@ function cleanup(hConn: mq.MQQueueManager, hObj: mq.MQObject) {
 
 const putMsgToMq = () => {
     console.log("Sample AMQSPUT.TS start")
-
     const cno: any          = new mq.MQCNO()
         cno.Options         |= MQC.MQCNO_CLIENT_BINDING // use MQCNO_CLIENT_BINDING to connect as client
         const cd: any       = new mq.MQCD()
@@ -51,16 +45,15 @@ const putMsgToMq = () => {
         csp.UserId          = "app"
         csp.Password        = "passw0rd"
         cno.SecurityParms   = csp
-    mq.Connx(qMgr, cno, function(connErr, hConn) {
+    mq.Connx(qMgr, cno, (connErr, hConn) => {
         if (connErr) console.log('EEE', connErr)
         else {
             console.log("MQCONN to %s successful ", qMgr)
-            // Define what we want to open, and how we want to open it.
-            const od = new mq.MQOD()
-            od.ObjectName = qName
-            od.ObjectType = MQC.MQOT_Q
+            const od        = new mq.MQOD()
+            od.ObjectName   = qName
+            od.ObjectType   = MQC.MQOT_Q
             const openOptions = MQC.MQOO_OUTPUT
-            mq.Open(hConn, od, openOptions, function (openErr, hObj) {
+            mq.Open(hConn, od, openOptions, (openErr, hObj) => {
                 if (openErr) console.log(openErr)
                 else {
                     console.log("MQOPEN of %s successful", qName)
