@@ -3,11 +3,11 @@ import chalk            from 'chalk'
 import DateFormatting   from './services/DateFormatting'
 import dotenv           from 'dotenv'
 
-import publishToMq from './mq/mqPublisher'
 import putMessage from './mq/httpRequest'
+import putMsgToMq from "./mq/putMessage"
 
 dotenv.config()
-const PORT = process.env.PORT || 4500
+const PORT = process.env.SERVER_PORT || 4500
 
 const app: Express = express()
 app.use(express.json)
@@ -18,8 +18,6 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 
-//publishToMq()
-putMessage()
 
 app.listen(PORT, () => {
     console.log(chalk.whiteBright(`\n
@@ -29,3 +27,4 @@ app.listen(PORT, () => {
     \t==============================\n`))
 })
 
+putMsgToMq()
